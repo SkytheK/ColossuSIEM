@@ -1,6 +1,6 @@
 # ColossuSIEM
 - Este repositorio contiene la integración de TheHive, Cortex y MISP (TRILEZ) para crear un sistema de analizadores y "responders" que nos crearan alertas y nos crearan respuestas efectivas frente a ellos.
--
+
 - También se podran encontrar otras herramientas, como Elasticsearch, Kibana, Cassandra, etc.
 
 - También podemos encontrar la configuración de una Switch y su documentación más la configuración de un Firewall y un PortMirroring.
