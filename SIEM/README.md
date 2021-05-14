@@ -7,5 +7,4 @@
 #### Necesitamos poner estas comandas para poder darles permisos a los contenedores y puedan realizar los cambios deseados.
 bash ```
 chown -R 1000:1000 <path_to_elasticsearch>
-docker-compose up -d elasticsearch
-```
+docker-compose up -d elasticsearch```
