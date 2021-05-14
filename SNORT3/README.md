@@ -1,2 +1,10 @@
 # SNORT 3.0
-##Instalación
+## Instalación
+
+
+```
+sudo apt update
+```
+```
+sudo apt upgrade
+```
