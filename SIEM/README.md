@@ -4,7 +4,7 @@
 - Cortex (3.)
 - MISP (2.)
  
-#### Necesitamos poner estas comandas para poder darles permisos a los contenedores y puedan realizar los cambios deseados.
+#### Necesitamos poner estas comandas para poder darles permisos a los contenedores de Elasticsearch y puedan realizar los cambios deseados.
 ```
 chown -R 1000:1000 <path_to_elasticsearch>
 ```
