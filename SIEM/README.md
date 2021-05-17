@@ -3,7 +3,7 @@
 - TheHive (4.1.4-1)
 - Cortex (3.1.1-1)
 - MISP (2.4.141)
-- 
+
 <img src="https://blogthehiveproject.files.wordpress.com/2018/11/the-hive-logo-schc3a9ma-v1_plan-de-travail-11.png" style="width: 100px;"/>
 
 
