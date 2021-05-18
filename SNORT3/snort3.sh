@@ -121,5 +121,5 @@ alert icmp any any -> $HOME_NET any (msg:"ICMP connection test"; sid:1000001; re
 #Check the local rules
 sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules
 
-snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i enp0s3 -A alert_fast -s 65535 -k none
+sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i enp0s3 -A alert_fast -s 65535 -k none
 
