@@ -6,4 +6,4 @@
 
 - Utilizaremos PortMirroring para analizar los paquetes que entran y salen de nuestra red para posteriormente analizarlos y detectar si hay algúna intrusión sospechosa, parecido a tener un NIDS pero con el PortMirroring.
 
-- Usaremos elastich para filtrar los datos y interpretarlos con Kibana para observarlos de forma gráfica y con TheHive, Cortes y MISP analizarlos y detectar un posible ataque.
+- Usaremos elastich para filtrar los datos y interpretarlos con Kibana para observarlos de forma gráfica y con TheHive, Cortex y MISP analizarlos y detectar un posible ataque.
