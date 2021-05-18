@@ -78,7 +78,7 @@ SW-PortMirror(config)# vlan 72
 SW-PortMirror(config-vlan)# name Clase2
 SW-PortMirror(config-vlan)# exit
 
-SW-PortMirror(config)# interface range FastEthernet 0/6-9
+SW-PortMirror(config)# interface range FastEthernet 0/6-9 (en caso de que no funcione probar dejar espacio, por ejemplo: interface range FastEthernet 0/6 - 9)
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 72
 
