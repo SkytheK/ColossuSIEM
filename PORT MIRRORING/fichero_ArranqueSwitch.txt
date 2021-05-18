@@ -39,7 +39,7 @@ SW-PortMirror(config-line)# password cisco
 SW-PortMirror(config-line)# login local
 SW-PortMirror(config-line)# exit
 SW-PortMirror(config)# username cisco privilege 15 secret cisco
-# SW-PortMirror(config)# username user privilege 3 secret user
+# SW-PortMirror(config)# username user privilege 3 secret user --> Si queremos tener un segudo usuario con no tantos privilegios
 
 #### Configuramos para que se deniegue el acceso a Telnet ####
 SW-PortMirror(config)# line vty 0 4
@@ -73,7 +73,6 @@ SW-PortMirror(config-vlan)# exit
 SW-PortMirror(config)# interface range FastEthernet 0/2-5
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
-SW-PortMirror(config-if-range)# spanning-tree portfast
 
 SW-PortMirror(config)# vlan 72
 SW-PortMirror(config-vlan)# name Clase2
@@ -82,7 +81,6 @@ SW-PortMirror(config-vlan)# exit
 SW-PortMirror(config)# interface range FastEthernet 0/6-9
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 72
-SW-PortMirror(config-if-range)# spanning-tree portfast
 
 SW-PortMirror(config)# vlan 73
 SW-PortMirror(config-vlan)# name Clase3
@@ -91,7 +89,6 @@ SW-PortMirror(config-vlan)# exit
 SW-PortMirror(config)# interface range FastEthernet 0/11-14
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 73
-SW-PortMirror(config-if-range)# spanning-tree portfast
 
 ### Mirarlo mejor es para el IDS
 SW-PortMirror(config)# vlan 105
@@ -101,7 +98,6 @@ SW-PortMirror(config-vlan)# exit
 SW-PortMirror(config)# interface range FastEthernet 0/15-18
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 105
-SW-PortMirror(config-if-range)# spanning-tree portfast
 
 # ESTRUCTURA: monitor session [numero-monitor] [source/destination] [interface/remote] [Ethernet/FastEthernet/GigabitEthernet/Vlan/port-channel] [numero-interfaz/vlan]
 # Puerto de origen en caso de que juguemos con LOS PUERTOS (Solo con la 1a VLAN)
