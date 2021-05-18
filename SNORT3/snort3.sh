@@ -9,8 +9,8 @@ echo "####SNORT 3.O ENVIROMENT"
 sudo apt install -y build-essential libpcap-dev libpcre3-dev libnet1-dev zlib1g-dev luajit hwloc libdnet-dev libdumbnet-dev bison flex liblzma-dev openssl libssl-dev pkg-config libhwloc-dev cmake cpputest libsqlite3-dev uuid-dev libcmocka-dev libnetfilter-queue-dev libmnl-dev autotools-dev libluajit-5.1-dev libunwind-dev
 
 #Crate tha enviroment
-mkdir snort-source-files
-cd snort-source-files
+mkdir snort-files
+cd snort-files
 
 #We clone the Snort3 l & enter libdaq
 git clone https://github.com/snort3/libdaq.git
