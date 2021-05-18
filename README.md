@@ -1,4 +1,3 @@
-
 # ColossuSIEM
 ![as-removebg-preview](https://user-images.githubusercontent.com/74800494/118487774-58fe6880-b71b-11eb-8b0e-c3b655288bb9.png)
 
