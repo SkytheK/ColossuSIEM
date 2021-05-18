@@ -54,15 +54,3 @@ chown -R 1000:1000 <path_to_thehive>
 ```bash
 docker-compose up -d thehive
 ```
-
-CONTAINER ID   IMAGE                                                  COMMAND                  CREATED        STATUS       PORTS                                         NAMES
-c01139846f26   coolacid/misp-docker:core-latest                       "/entrypoint.sh"         24 hours ago   Up 3 hours   0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp      misp
-273dcbf1e2ce   mysql:latest                                           "docker-entrypoint.s…"   24 hours ago   Up 3 hours   3306/tcp, 33060/tcp                           db
-b6787b9ae9d5   coolacid/misp-docker:modules-latest                    "/usr/local/bin/misp…"   24 hours ago   Up 3 hours                                                 misp-modules
-d8834c5c6ba1   thehiveproject/thehive4:latest                         "/opt/thehive/entryp…"   24 hours ago   Up 3 hours   0.0.0.0:9000->9000/tcp                        thehive
-2277631cafd7   thehiveproject/cortex:latest                           "/opt/cortex/entrypo…"   24 hours ago   Up 3 hours   0.0.0.0:9001->9001/tcp                        cortex
-0be4f04fea03   docker.elastic.co/kibana/kibana:7.11.1                 "/bin/tini -- /usr/l…"   24 hours ago   Up 3 hours   0.0.0.0:5601->5601/tcp                        kibana
-e15180935a9d   docker.elastic.co/elasticsearch/elasticsearch:7.11.1   "/bin/tini -- /usr/l…"   24 hours ago   Up 3 hours   0.0.0.0:9200->9200/tcp, 9300/tcp              elasticsearch
-a8cc295ccbf3   redis:latest                                           "docker-entrypoint.s…"   24 hours ago   Up 3 hours   6379/tcp                                      redis
-9c63be52d82c   cassandra:3.11                                         "docker-entrypoint.s…"   24 hours ago   Up 3 hours   7000-7001/tcp, 7199/tcp, 9042/tcp, 9160/tcp   cassandra
-
