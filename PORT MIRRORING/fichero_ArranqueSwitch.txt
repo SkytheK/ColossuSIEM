@@ -100,7 +100,9 @@ SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 105
 
 # ESTRUCTURA: monitor session [numero-monitor] [source/destination] [interface/remote] [Ethernet/FastEthernet/GigabitEthernet/Vlan/port-channel] [numero-interfaz/vlan]
-# Puerto de origen en caso de que juguemos con LOS PUERTOS (Solo con la 1a VLAN)
+
+# En caso de que juguemos con LOS PUERTOS (Solo con la 1a VLAN)
+# Puerto de origen
 # SW-PortMirror(config)# monitor session 1 source interface FastEthernet 0/2 both
 # SW-PortMirror(config)# monitor session 2 source interface FastEthernet 0/3 both
 # SW-PortMirror(config)# monitor session 3 source interface FastEthernet 0/4 both
@@ -112,17 +114,18 @@ SW-PortMirror(config-if-range)# switchport access vlan 105
 # SW-PortMirror(config)# monitor session 3 destination interface FastEthernet 0/15
 # SW-PortMirror(config)# monitor session 4 destination interface FastEthernet 0/15
 
-# Puertos de origen en caso de que juguemos con LAS VLANS
+# En caso de que juguemos con LAS VLANS
+# Puertos de origen
 SW-PortMirror(config)# monitor session 1 source remote vlan 71
 SW-PortMirror(config)# monitor session 2 source remote vlan 72
 SW-PortMirror(config)# monitor session 3 source remote vlan 73
 
-# Puerto de destino (2 opciones)
-# 1a lo manda a una VLAN y puerto especifico
-SW-PortMirror(config)# monitor session 1 destination remote vlan 105 reflector-port FastEthernet 0/15
-
-# 2a lo manda por un puerto, sin indicar la VLAN
+# 1a lo manda por un puerto, sin indicar la VLAN
 SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/15
+
+# Puerto de destino (2 opciones)
+# 2a lo manda a una VLAN y puerto especifico
+SW-PortMirror(config)# monitor session 1 destination remote vlan 105 reflector-port FastEthernet 0/15
 
 SW-PortMirror(config)# monitor session 2 destination remote vlan 105 reflector-port FastEthernet 0/15
 SW-PortMirror(config)# monitor session 3 destination remote vlan 105 reflector-port FastEthernet 0/15
