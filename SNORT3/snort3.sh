@@ -98,4 +98,12 @@ wget https://snort.org/downloads/openappid/17843 -O OpenAppId-17843.tgz
 tar -xzvf OpenAppId-17843.tgz
 cp -R odp /usr/local/lib/
 
+#
+appid =
+{
+    -- appid requires this to use appids in rules
+    --app_detector_dir = 'directory to load appid detectors from'
+    app_detector_dir = '/usr/local/lib',
+    log_stats = true,
 
+}
