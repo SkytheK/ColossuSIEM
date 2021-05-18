@@ -45,7 +45,7 @@ sudo make
 sudo make install
 
 #Update shared libraries
-ldconfig
+sudo ldconfig
 
 echo "####SNORT 3.O CONFIGURE THE SERVICE"
 
@@ -57,4 +57,19 @@ ip add sh enp0s3
 ethtool -k enp0s3 | grep receive-offload
 ethtool -K enp0s3 gro off lro off
 
+
+#d
+[Unit]
+Description=Set Snort 3 NIC in promiscuous mode and Disable GRO, LRO on boot
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/ip link set dev ens18 promisc on
+ExecStart=/usr/sbin/ethtool -K ens18 gro off lro off
+TimeoutStartSec=0
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target
 
