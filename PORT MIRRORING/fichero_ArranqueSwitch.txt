@@ -120,10 +120,11 @@ SW-PortMirror(config)# monitor session 1 source remote vlan 71
 SW-PortMirror(config)# monitor session 2 source remote vlan 72
 SW-PortMirror(config)# monitor session 3 source remote vlan 73
 
+# Para el destino tenemos 2 opciones
 # 1a lo manda por un puerto, sin indicar la VLAN
 SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/15
 
-# Puerto de destino (2 opciones)
+# Puerto de destino
 # 2a lo manda a una VLAN y puerto especifico
 SW-PortMirror(config)# monitor session 1 destination remote vlan 105 reflector-port FastEthernet 0/15
 
