@@ -84,7 +84,18 @@ sudo mkdir /usr/local/etc/rules
 
 #Download Snort 3 community rules & extract them
 wget https://www.snort.org/downloads/community/snort3-community-rules.tar.gz
-tar xzf snort3-community-rules.tar.gz -C /usr/local/etc/rules/
-ls /usr/local/etc/rules/snort3-community-rules/
+sudo tar xzf snort3-community-rules.tar.gz -C /usr/local/etc/rules/
+#ls /usr/local/etc/rules/snort3-community-rules/
+
+#Configure /usr/local/snort/snort.lua
+
+
+
+echo "####SNORT 3.O INSTALLING OPENAPPID"
+
+#Download the pakages
+wget https://snort.org/downloads/openappid/17843 -O OpenAppId-17843.tgz
+tar -xzvf OpenAppId-17843.tgz
+cp -R odp /usr/local/lib/
 
 
