@@ -73,3 +73,18 @@ RemainAfterExit=yes
 [Install]
 WantedBy=default.target
 
+#Reload systemd configuration settings
+sudo systemctl daemon-reload
+
+#Start and enable the serice
+sudo systemctl enable --now snort3-nic.service
+
+#Create the snort3 rules folder
+sudo mkdir /usr/local/etc/rules
+
+#Download Snort 3 community rules & extract them
+wget https://www.snort.org/downloads/community/snort3-community-rules.tar.gz
+tar xzf snort3-community-rules.tar.gz -C /usr/local/etc/rules/
+ls /usr/local/etc/rules/snort3-community-rules/
+
+
