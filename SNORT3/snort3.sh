@@ -96,7 +96,7 @@ echo "####SNORT 3.O INSTALLING OPENAPPID"
 #Download the pakages
 wget https://snort.org/downloads/openappid/17843 -O OpenAppId-17843.tgz
 tar -xzvf OpenAppId-17843.tgz
-cp -R odp /usr/local/lib/
+sudo cp -R odp /usr/local/lib/
 
 #
 appid =
@@ -107,3 +107,19 @@ appid =
     log_stats = true,
 
 }
+
+#Create Snort3 log directory
+sudo mkdir /var/log/snort
+
+#Check the Snort3 configuration
+sudo snort -c /usr/local/etc/snort/snort.lua
+
+#Create a rule to detect ping tests
+sudo nano /usr/local/etc/rules/local.rules
+alert icmp any any -> $HOME_NET any (msg:"ICMP connection test"; sid:1000001; rev:1;)
+
+#Check the local rules
+sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules
+
+snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i ens18 -A alert_fast -s 65535 -k none
+
