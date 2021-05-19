@@ -1,1 +1,124 @@
+version: "3.8"
+services:
+  elasticsearch:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.11.1'
+    container_name: elasticsearch
+    restart: unless-stopped
+    ports:
+      - '0.0.0.0:9200:9200'
+    environment:
+      - http.host=0.0.0.0
+      - discovery.type=single-node
+      - cluster.name=hive
+      - script.allowed_types= inline
+      - thread_pool.search.queue_size=100000
+      - thread_pool.write.queue_size=10000
+      - gateway.recover_after_nodes=1
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - ./vol/elasticsearch_data:/usr/share/elasticsearch/data
+      - ./vol/elasticsearch_logs:/usr/share/elasticsearch/logs
 
+  kibana:
+    image: 'docker.elastic.co/kibana/kibana:7.11.1'
+    container_name: kibana
+    restart: unless-stopped
+    depends_on:
+      - elasticsearch
+    ports:
+      - '5601:5601'
+
+  cortex:
+    image: 'thehiveproject/cortex:latest'
+    container_name: cortex
+    restart: unless-stopped
+    volumes:
+      - ./cortex/application.conf:/etc/cortex/application.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    environment:
+      - http_proxy=${http_proxy}
+      - https_proxy=${https_proxy}      
+    depends_on:
+      - elasticsearch
+    ports:
+      - '0.0.0.0:9001:9001'
+
+  cassandra:
+    image: cassandra:3.11
+    container_name: cassandra
+    restart: unless-stopped
+    hostname: cassandra
+    environment:
+      - MAX_HEAP_SIZE=1G
+      - HEAP_NEWSIZE=1G
+      - CASSANDRA_CLUSTER_NAME=thp
+    volumes:
+      - ./vol/cassandra-data:/var/lib/cassandra/data
+
+  thehive:
+    image: 'thehiveproject/thehive4:latest'
+    container_name: thehive
+    restart: unless-stopped
+    depends_on:
+      - cassandra
+    ports:
+      - '0.0.0.0:9000:9000'
+    volumes:
+      - ./thehive/application.conf:/etc/thehive/application.conf
+      - ./vol/data:/opt/data
+      - ./vol/index:/opt/index
+    command: '--no-config --no-config-secret'
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+
+  db:
+    image: mysql:latest
+    container_name: db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    environment:
+      - "MYSQL_USER=misp"
+      - "MYSQL_PASSWORD=example"
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=misp"
+    volumes:
+      - ./vol/mysql:/var/lib/mysql
+    cap_add:
+      - SYS_NICE
+
+  misp:
+    image: coolacid/misp-docker:core-latest
+    container_name: misp
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - db
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - "HOSTNAME=https://10.200.0.29"
+      - "REDIS_FQDN=redis"
+      - "INIT=true"
+      - "CRON_USER_ID=1"
+      - "DISIPV6=true"
+
+  misp-modules:
+    image: coolacid/misp-docker:modules-latest
+    container_name: misp-modules
+    environment:
+      - "REDIS_BACKEND=redis"
+    depends_on:
+      - redis
+      - db
