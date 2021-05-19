@@ -1,4 +1,8 @@
 #!/bin/bash
+#Variables declarations
+snort_interface="enp0s3"
+home_net="172.20.16.206/32"
+
 #Update & Upgrade our environment
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -30,7 +34,7 @@ cd  gperftools-2.8/
 ./configure
 sudo make
 sudo make install
-cd ../
+cd ..
 
 echo "####SNORT 3.O INSTALL SERVICE"
 
@@ -50,28 +54,29 @@ sudo ldconfig
 echo "####SNORT 3.O CONFIGURE THE SERVICE"
 
 #Configure netword interface
-ip link set dev enp0s3 promisc on
-ip add sh enp0s3
+sudo ip link set dev ${snort_interface} promisc on
+sudo ip add sh ${snort_interface}
 
 #Disable Interface
-ethtool -k enp0s3 | grep receive-offload
-ethtool -K enp0s3 gro off lro off
+ethtool -k ${snort_interface} | grep receive-offload
+sudo ethtool -K ${snort_interface} gro off lro off
 
-
-#d
+#Create and enable a systemd service unit
+sudo bash -c "cat << END > /etc/systemd/system/snort3-nic.service
 [Unit]
 Description=Set Snort 3 NIC in promiscuous mode and Disable GRO, LRO on boot
 After=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/sbin/ip link set dev ens18 promisc on
-ExecStart=/usr/sbin/ethtool -K ens18 gro off lro off
+ExecStart=/usr/sbin/ip link set dev ${snort_interface} promisc on
+ExecStart=/usr/sbin/ethtool -K ${snort_interface} gro off lro off
 TimeoutStartSec=0
 RemainAfterExit=yes
 
 [Install]
 WantedBy=default.target
+END"
 
 #Reload systemd configuration settings
 sudo systemctl daemon-reload
@@ -88,8 +93,10 @@ sudo tar xzf snort3-community-rules.tar.gz -C /usr/local/etc/rules/
 #ls /usr/local/etc/rules/snort3-community-rules/
 
 #Configure /usr/local/snort/snort.lua
+sed -i 's/HOME_NET = 'any'/HOME_NET = '$home_net'/g' /usr/local/snort/snort.lua
 
-
+#DEFAULTS
+/usr/local/etc/snort/snort_defaults.lua include = 'snort3-community.rules' en la parte de ips
 
 echo "####SNORT 3.O INSTALLING OPENAPPID"
 
@@ -98,7 +105,9 @@ wget https://snort.org/downloads/openappid/17843 -O OpenAppId-17843.tgz
 tar -xzvf OpenAppId-17843.tgz
 sudo cp -R odp /usr/local/lib/
 
-#
+#Copy and configure the location of the OpenAppID
+sudo cp /usr/local/etc/snort/snort.lua /usr/local/etc/snort/snort.lua.back
+sudo bash -c 'cat << END >> /usr/local/etc/snort/snort.lua
 appid =
 {
     -- appid requires this to use appids in rules
@@ -107,6 +116,7 @@ appid =
     log_stats = true,
 
 }
+END'
 
 #Create Snort3 log directory
 sudo mkdir /var/log/snort
@@ -125,13 +135,11 @@ sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules
 
 echo "####SNORT 3.O LOGGING"
 #Configure the events loggings
-sudo nano /usr/local/etc/snort/snort.lua
-
-alert_fast = { 
+sed -i 's/--alert_fast = { }/alert_fast = { 
         file = true, 
         packet = false,
         limit = 10,
-}
+}/g' /usr/local/etc/snort/snort.lua
 
 #Check for the configuration
 sudo snort -c /usr/local/etc/snort/snort.lua
