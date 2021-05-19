@@ -108,7 +108,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - "HOSTNAME=https://10.200.0.29"
+      - "HOSTNAME=https://misp"
       - "REDIS_FQDN=redis"
       - "INIT=true"
       - "CRON_USER_ID=1"
