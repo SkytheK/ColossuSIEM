@@ -1,6 +1,7 @@
 #!/bin/bash
 #Variables declarations
 snort_interface="enp0s3"
+#home_net=`hostname -I | awk '{print $1}'`
 home_net="172.20.16.206/32"
 
 #Update & Upgrade our environment
