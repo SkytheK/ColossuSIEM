@@ -9,14 +9,14 @@ Switch# configure terminal
 
 #### Para cambiar el nombre ####
 Switch(config)# hostname SW-PortMirror
-# SW-PortMirror(config)# ip domain-name projecte.com --> Para la configuracion de SSH
+# SW-PortMirror(config)# ip domain-name projecte.com --> Necesario para la configuracion de SSH
 
-#### Aplicamos contraseñas ####
+#### Aplicamos contraseñas y las encriptamos ####
 SW-PortMirror(config)# enable password cisco
 SW-PortMirror(config)# enable secret class
 SW-PortMirror(config)# service password-encryption
 
-#### Configuramos una vlan (nombre, IP y rango de puertos) para la configuración del mismo ####
+#### Configuramos una vlan (nombre, IP y rango de puertos) SOLO para la configuración del mismo ####
 SW-PortMirror(config)# vlan 66
 SW-PortMirror(config-vlan)# name Configuration
 SW-PortMirror(config-vlan)# exit
@@ -24,8 +24,8 @@ SW-PortMirror(config-vlan)# exit
 SW-PortMirror(config)# interface vlan 66
 SW-PortMirror(config-if)# ip address 192.168.66.5 255.255.255.0
 SW-PortMirror(config-if)# no shutdown
-SW-PortMirror(config-vlan)# exit
-SW-PortMirror(config)# ip default-gateway 192.168.66.1 --> En caso de que tengamos un router con IP 192.168.66.1
+SW-PortMirror(config-if)# exit
+SW-PortMirror(config)# ip default-gateway 192.168.66.1
 
 SW-PortMirror(config)# interface FastEthernet 0/10
 SW-PortMirror(config-if)# switchport mode access
@@ -33,7 +33,7 @@ SW-PortMirror(config-if)# switchport access vlan 66
 SW-PortMirror(config-if)# no shutdown
 SW-PortMirror(config-if)# exit
 
-#### Creamos dos usuarios con contraseña, uno con los maximos privilegios y el otro con no tantos ####
+#### Configuramos la linea de consola y creamos dos usuarios con contraseña, uno con los maximos privilegios y el otro con no tantos ####
 SW-PortMirror(config)# line console 0
 SW-PortMirror(config-line)# password cisco
 SW-PortMirror(config-line)# login local
@@ -41,7 +41,7 @@ SW-PortMirror(config-line)# exit
 SW-PortMirror(config)# username cisco privilege 15 secret cisco
 # SW-PortMirror(config)# username user privilege 3 secret user --> Si queremos tener un segudo usuario con no tantos privilegios
 
-#### Configuramos para que se deniegue el acceso a Telnet ####
+#### Configuramos el acceso a Telnet o a cualquier tipo de conexión ####
 SW-PortMirror(config)# line vty 0 4
 SW-PortMirror(config-line)# password cisco
 SW-PortMirror(config-line)# no access-class 23 in
@@ -49,28 +49,31 @@ SW-PortMirror(config-line)# transport input all
 SW-PortMirror(config-line)# login local
 SW-PortMirror(config-line)# exit
 
-# SW-PortMirror(config)# crypto key generate rsa --> Las claves tiene que ser de 1024 bits ya que inferior no deja usar la version 2 de SSH
-# SW-PortMirror(config)# ip ssh version 2
+#### Generamos las claves para SSH ####
+# SW-PortMirror(config)# crypto key generate rsa --> Las claves tiene que ser más de 1024 bits ya que inferior no deja usar la version 2 de SSH
+# SW-PortMirror(config)# ip ssh version 2 --> Usamos la versión 2 ya que la 1 no es tan segura
 
-### Si queremos un puerto trunk (troncal) que sirve para la comunicacion entre los otros switches ####
+#### Si queremos un puerto trunk (troncal) que sirve para la comunicacion entre los otros switches #####
 SW-PortMirror(config)# interface FastEthernet0/24
 SW-PortMirror(config-if)# switchport mode trunk
-# SW-PortMirror(config-if)# switchport trunk allowed vlan all --> Si lo queremos restringir mas profundamente
+# SW-PortMirror(config-if)# switchport trunk denied vlan 101 --> Si queremos que alguna VLAN tenga prohibido acceder por el puerto TRUNK
 
 #### Comprobación de que funciona correctamente ####
 1. Configurar router encendiendo la interfaz y poniendole una IP
 2. Configurar PC cliente con IP (Por ejemplo 192.168.66.6) y mascara (255.255.255.0)
-C:\> ping 192.168.66.5 --> Para ver si llega conectividad
-C:\> telnet 192.168.66.5 --> Si nos permite Telnet
-C:\> ssh -l cisco 192.168.66.5 --> Si nos permite SSH
+3. Comprobamos que funciona la conexión
+C:\> ping 192.168.66.5 --> Para ver si tenemos conectividad
+C:\> telnet 192.168.66.5 --> Si usamos Telnet comprobamos que funciona
+C:\> ssh -l cisco 192.168.66.5 --> Si usamos SSH comprobamos que funciona
 
-#### Para el Port Mirroring (Buscar mucha mas informacion sobre las comandas. En el instituto solo se puede hacer una monitorización.) ####
-### Creamos 3 vlans diferentes donde simulamos que hay tres clases diferentes y las configuramos
+#### Para la configuración del Port Mirroring ####
+##### Creamos 2 vlans diferentes donde simulamos que hay dos clases diferentes y en cada una de ellas habrá un PC donde uno sera la victima y el otro el atacante #####
 SW-PortMirror(config)# vlan 71
 SW-PortMirror(config-vlan)# name Clase1
 SW-PortMirror(config-vlan)# exit
 
-SW-PortMirror(config)# interface range FastEthernet 0/2-5
+#### Y las configuramos con sus respectivos puertos y les asignamos sus respectivas VLANS ####
+SW-PortMirror(config)# interface range FastEthernet 0/2-5 --> (en caso de que no funcione, dejar un espacio entre los numeros, por ejemplo: interface range FastEthernet 0/6 - 9)
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
 
@@ -78,19 +81,11 @@ SW-PortMirror(config)# vlan 72
 SW-PortMirror(config-vlan)# name Clase2
 SW-PortMirror(config-vlan)# exit
 
-SW-PortMirror(config)# interface range FastEthernet 0/6-9 (en caso de que no funcione probar dejar espacio, por ejemplo: interface range FastEthernet 0/6 - 9)
+SW-PortMirror(config)# interface range FastEthernet 0/6-9
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 72
 
-SW-PortMirror(config)# vlan 73
-SW-PortMirror(config-vlan)# name Clase3
-SW-PortMirror(config-vlan)# exit
-
-SW-PortMirror(config)# interface range FastEthernet 0/11-14
-SW-PortMirror(config-if-range)# switchport mode access
-SW-PortMirror(config-if-range)# switchport access vlan 73
-
-### Mirarlo mejor es para el IDS
+#### VLAN para el IDS ####
 SW-PortMirror(config)# vlan 105
 SW-PortMirror(config-vlan)# name TRASPASO
 SW-PortMirror(config-vlan)# exit
@@ -101,41 +96,13 @@ SW-PortMirror(config-if-range)# switchport access vlan 105
 
 # ESTRUCTURA: monitor session [numero-monitor] [source/destination] [interface/remote] [Ethernet/FastEthernet/GigabitEthernet/Vlan/port-channel] [numero-interfaz/vlan]
 
-# En caso de que juguemos con LOS PUERTOS (Solo con la 1a VLAN)
-# Puerto de origen
-# SW-PortMirror(config)# monitor session 1 source interface FastEthernet 0/2 both
-# SW-PortMirror(config)# monitor session 2 source interface FastEthernet 0/3 both
-# SW-PortMirror(config)# monitor session 3 source interface FastEthernet 0/4 both
-# SW-PortMirror(config)# monitor session 4 source interface FastEthernet 0/5 both
-
-# Puerto de destino
-# SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/15 [both] Probarlo
-# SW-PortMirror(config)# monitor session 2 destination interface FastEthernet 0/15
-# SW-PortMirror(config)# monitor session 3 destination interface FastEthernet 0/15
-# SW-PortMirror(config)# monitor session 4 destination interface FastEthernet 0/15
-
-# En caso de que juguemos con LAS VLANS
-# Puertos de origen
+# Como que usamos VLANS:
+# Puertos de origen donde le indicamos la VLAN 71
 SW-PortMirror(config)# monitor session 1 source remote vlan 71
-SW-PortMirror(config)# monitor session 2 source remote vlan 72
-SW-PortMirror(config)# monitor session 3 source remote vlan 73
 
 # Para el destino tenemos 2 opciones
-# 1a lo manda por un puerto, sin indicar la VLAN
+# 1a lo manda por un puerto sin indicar la VLAN
 SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/15
 
-# Puerto de destino
 # 2a lo manda a una VLAN y puerto especifico
 SW-PortMirror(config)# monitor session 1 destination remote vlan 105 reflector-port FastEthernet 0/15
-
-SW-PortMirror(config)# monitor session 2 destination remote vlan 105 reflector-port FastEthernet 0/15
-SW-PortMirror(config)# monitor session 3 destination remote vlan 105 reflector-port FastEthernet 0/15
-
-#### Opcionalmente si se quiere hacer DNS en el port mirroring ###
-SW-PortMirror(config)# ip host dns <IP_SERVIDOR_DNS>
-SW-PortMirror(config)# ip name-server <IP_SERVIDOR_DNS> 8.8.8.8 8.8.4.4
-SW-PortMirror(config)# ip domain-lookup
-SW-PortMirror(config)# ip domain round-robin -->
-SW-PortMirror(config)# ip dns server
-SW-PortMirror(config)# ip dns spoofing <IP_SERVIDOR_DNS>
-SW-PortMirror(config)#
