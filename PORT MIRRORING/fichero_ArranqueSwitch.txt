@@ -73,7 +73,7 @@ SW-PortMirror(config-vlan)# name Clase1
 SW-PortMirror(config-vlan)# exit
 
 #### Y las configuramos con sus respectivos puertos y les asignamos sus respectivas VLANS ####
-SW-PortMirror(config)# interface range FastEthernet 0/2-5 --> (en caso de que no funcione, dejar un espacio entre los numeros, por ejemplo: interface range FastEthernet 0/6 - 9)
+SW-PortMirror(config)# interface range FastEthernet 0/2 - 5
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
 
@@ -81,7 +81,7 @@ SW-PortMirror(config)# vlan 72
 SW-PortMirror(config-vlan)# name Clase2
 SW-PortMirror(config-vlan)# exit
 
-SW-PortMirror(config)# interface range FastEthernet 0/6-9
+SW-PortMirror(config)# interface range FastEthernet 0/6 - 9
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 72
 
@@ -90,7 +90,7 @@ SW-PortMirror(config)# vlan 105
 SW-PortMirror(config-vlan)# name TRASPASO
 SW-PortMirror(config-vlan)# exit
 
-SW-PortMirror(config)# interface range FastEthernet 0/15-18
+SW-PortMirror(config)# interface range FastEthernet 0/15 - 18
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 105
 
