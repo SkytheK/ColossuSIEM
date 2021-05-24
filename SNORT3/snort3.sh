@@ -8,7 +8,7 @@ home_net="172.20.16.206/32"
 sudo apt-get update
 sudo apt-get upgrade -y
 
-echo "####SNORT 3.O ENVIROMENT"
+echo "#### SNORT 3.O ENVIROMENT ####"
 
 #Install all the necesary packages 
 sudo apt install -y build-essential libpcap-dev libpcre3-dev libnet1-dev zlib1g-dev luajit hwloc libdnet-dev libdumbnet-dev bison flex liblzma-dev openssl libssl-dev pkg-config libhwloc-dev cmake cpputest libsqlite3-dev uuid-dev libcmocka-dev libnetfilter-queue-dev libmnl-dev autotools-dev libluajit-5.1-dev libunwind-dev
@@ -37,7 +37,7 @@ sudo make
 sudo make install
 cd ..
 
-echo "####SNORT 3.O INSTALL SERVICE"
+echo "#### SNORT 3.O INSTALL SERVICE ####"
 
 #We clone the git with Snort3 & configure them
 git clone git://github.com/snortadmin/snort3.git
@@ -52,7 +52,7 @@ sudo make install
 #Update shared libraries
 sudo ldconfig
 
-echo "####SNORT 3.O CONFIGURE THE SERVICE"
+echo "#### SNORT 3.O CONFIGURE THE SERVICE ####"
 
 #Configure netword interface
 sudo ip link set dev ${snort_interface} promisc on
@@ -94,12 +94,26 @@ sudo tar xzf snort3-community-rules.tar.gz -C /usr/local/etc/rules/
 #ls /usr/local/etc/rules/snort3-community-rules/
 
 #Configure /usr/local/snort/snort.lua
-sed -i 's/HOME_NET = 'any'/HOME_NET = '$home_net'/g' /usr/local/snort/snort.lua
+-- sed -i "s/HOME_NET = 'any'/HOME_NET = \'$home_net\'/g" /usr/local/snort/snort.lua
 
-#DEFAULTS
-/usr/local/etc/snort/snort_defaults.lua include = 'snort3-community.rules' en la parte de ips
+#Define the location the Snort Rules
+sed i 's/ips =
+{
+    -- use this to enable decoder and inspector alerts
+    --enable_builtin_rules = true,
 
-echo "####SNORT 3.O INSTALLING OPENAPPID"
+    -- use include for rules files; be sure to set your path
+    -- note that rules files can include other rules files/ips =
+{
+    -- use this to enable decoder and inspector alerts
+    --enable_builtin_rules = true,
+
+    -- use include for rules files; be sure to set your path
+    -- note that rules files can include other rules files
+    include = '/usr/local/etc/rules/snort3-community-rules/snort3-community.rules'
+}/g' /usr/local/etc/snort/snort_defaults.lua
+
+echo "#### SNORT 3.O INSTALLING OPENAPPID ####"
 
 #Download the pakages
 wget https://snort.org/downloads/openappid/17843 -O OpenAppId-17843.tgz
@@ -107,17 +121,19 @@ tar -xzvf OpenAppId-17843.tgz
 sudo cp -R odp /usr/local/lib/
 
 #Copy and configure the location of the OpenAppID
-sudo cp /usr/local/etc/snort/snort.lua /usr/local/etc/snort/snort.lua.back
-sudo bash -c 'cat << END >> /usr/local/etc/snort/snort.lua
-appid =
+sed -i 's/appid =
+{
+    -- appid requires this to use appids in rules
+    --app_detector_dir = 'directory to load appid detectors from'
+
+}/appid =
 {
     -- appid requires this to use appids in rules
     --app_detector_dir = 'directory to load appid detectors from'
     app_detector_dir = '/usr/local/lib',
     log_stats = true,
 
-}
-END'
+}/g' /usr/local/etc/snort/snort.lua
 
 #Create Snort3 log directory
 sudo mkdir /var/log/snort
@@ -126,13 +142,13 @@ sudo mkdir /var/log/snort
 sudo snort -c /usr/local/etc/snort/snort.lua
 
 #Create a rule to detect ping tests
-sudo nano /usr/local/etc/rules/local.rules
+sudo bash -c 'cat << END >> /usr/local/etc/rules/local.rules
 alert icmp any any -> $HOME_NET any (msg:"ICMP connection test"; sid:1000001; rev:1;)
+END'
 
 #Check the local rules
 sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules
-
-sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i enp0s3 -A alert_fast -s 65535 -k none
+sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i ${snort_interface} -A alert_fast -s 65535 -k none
 
 echo "####SNORT 3.O LOGGING"
 #Configure the events loggings
@@ -146,4 +162,4 @@ sed -i 's/--alert_fast = { }/alert_fast = {
 sudo snort -c /usr/local/etc/snort/snort.lua
 
 #Runing the comand with the option -l /var/log/snort
-sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i enp0s3 -s 65535 -k none -l /var/log/snort/
+sudo snort -c /usr/local/etc/snort/snort.lua -R /usr/local/etc/rules/local.rules -i ${snort_interface} -s 65535 -k none -l /var/log/snort/
