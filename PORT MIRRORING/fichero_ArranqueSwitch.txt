@@ -70,7 +70,7 @@ SW-PortMirror(config)# vlan 71
 SW-PortMirror(config-vlan)# name Clase1
 SW-PortMirror(config-vlan)# exit
 
-#### Y las configuramos con sus respectivos puertos y les asignamos sus respectivas VLANS ####
+#### Y las configuramos con sus respectivos puertos y les asignamos a su respectiva VLAN ####
 SW-PortMirror(config)# interface range FastEthernet 0/2 - 9
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
