@@ -9,7 +9,7 @@ Switch# configure terminal
 
 #### Para cambiar el nombre ####
 Switch(config)# hostname SW-PortMirror
-# SW-PortMirror(config)# ip domain-name projecte.com --> Necesario para la configuracion de SSH
+SW-PortMirror(config)# ip domain-name projecte.com --> Necesario para la configuracion de SSH
 
 #### Aplicamos contraseñas y las encriptamos ####
 SW-PortMirror(config)# enable password cisco
@@ -39,7 +39,6 @@ SW-PortMirror(config-line)# password cisco
 SW-PortMirror(config-line)# login local
 SW-PortMirror(config-line)# exit
 SW-PortMirror(config)# username cisco privilege 15 secret cisco
-# SW-PortMirror(config)# username user privilege 3 secret user --> Si queremos tener un segudo usuario con no tantos privilegios
 
 #### Configuramos el acceso a Telnet o a cualquier tipo de conexión ####
 SW-PortMirror(config)# line vty 0 4
@@ -50,13 +49,12 @@ SW-PortMirror(config-line)# login local
 SW-PortMirror(config-line)# exit
 
 #### Generamos las claves para SSH ####
-# SW-PortMirror(config)# crypto key generate rsa --> Las claves tiene que ser más de 1024 bits ya que inferior no deja usar la version 2 de SSH
-# SW-PortMirror(config)# ip ssh version 2 --> Usamos la versión 2 ya que la 1 no es tan segura
+SW-PortMirror(config)# crypto key generate rsa --> Las claves tiene que ser más de 1024 bits ya que inferior no deja usar la version 2 de SSH
+SW-PortMirror(config)# ip ssh version 2 --> Usamos la versión 2 ya que la 1 no es tan segura
 
 #### Si queremos un puerto trunk (troncal) que sirve para la comunicacion entre los otros switches #####
 SW-PortMirror(config)# interface FastEthernet0/24
 SW-PortMirror(config-if)# switchport mode trunk
-# SW-PortMirror(config-if)# switchport trunk denied vlan 101 --> Si queremos que alguna VLAN tenga prohibido acceder por el puerto TRUNK
 
 #### Comprobación de que funciona correctamente ####
 1. Configurar router encendiendo la interfaz y poniendole una IP
@@ -67,42 +65,24 @@ C:\> telnet 192.168.66.5 --> Si usamos Telnet comprobamos que funciona
 C:\> ssh -l cisco 192.168.66.5 --> Si usamos SSH comprobamos que funciona
 
 #### Para la configuración del Port Mirroring ####
-##### Creamos 2 vlans diferentes donde simulamos que hay dos clases diferentes y en cada una de ellas habrá un PC donde uno sera la victima y el otro el atacante #####
+### Creamos 1 VLAN donde habrá dos PCs, uno sera la victima y el otro el atacante
 SW-PortMirror(config)# vlan 71
 SW-PortMirror(config-vlan)# name Clase1
 SW-PortMirror(config-vlan)# exit
 
 #### Y las configuramos con sus respectivos puertos y les asignamos sus respectivas VLANS ####
-SW-PortMirror(config)# interface range FastEthernet 0/2 - 5
+SW-PortMirror(config)# interface range FastEthernet 0/2 - 9
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
 
-SW-PortMirror(config)# vlan 72
-SW-PortMirror(config-vlan)# name Clase2
-SW-PortMirror(config-vlan)# exit
-
-SW-PortMirror(config)# interface range FastEthernet 0/6 - 9
+SW-PortMirror(config)# interface range FastEthernet 0/11 - 23
 SW-PortMirror(config-if-range)# switchport mode access
-SW-PortMirror(config-if-range)# switchport access vlan 72
+SW-PortMirror(config-if-range)# switchport access vlan 71
 
-#### VLAN para el IDS ####
-SW-PortMirror(config)# vlan 105
-SW-PortMirror(config-vlan)# name TRASPASO
-SW-PortMirror(config-vlan)# exit
+# ESTRUCTURA: monitor session [numero-session] [source/destination] [interface/remote] [Ethernet/FastEthernet/GigabitEthernet/Vlan/port-channel] [numero-interfaz/vlan]
 
-SW-PortMirror(config)# interface range FastEthernet 0/15 - 18
-SW-PortMirror(config-if-range)# switchport mode access
-SW-PortMirror(config-if-range)# switchport access vlan 105
+# Puerto de origen que sera el PC de la victima
+SW-PortMirror(config)# monitor session 1 source interface FastEthernet 0/3
 
-# ESTRUCTURA: monitor session [numero-monitor] [source/destination] [interface/remote] [Ethernet/FastEthernet/GigabitEthernet/Vlan/port-channel] [numero-interfaz/vlan]
-
-# Como que usamos VLANS:
-# Puertos de origen donde le indicamos la VLAN 71
-SW-PortMirror(config)# monitor session 1 source remote vlan 71
-
-# Para el destino tenemos 2 opciones
-# 1a lo manda por un puerto sin indicar la VLAN
+# Puerto de destino que sera donde estará el IDS
 SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/15
-
-# 2a lo manda a una VLAN y puerto especifico
-SW-PortMirror(config)# monitor session 1 destination remote vlan 105 reflector-port FastEthernet 0/15
