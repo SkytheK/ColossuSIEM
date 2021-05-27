@@ -56,11 +56,11 @@ SW-PortMirror(config-if)# switchport mode trunk
 
 #### Comprobación de que funciona correctamente ####
 1. Configurar router encendiendo la interfaz y poniendole una IP
-2. Configurar PC cliente con IP (Por ejemplo 192.168.66.6) y mascara (255.255.255.0)
+2. Configurar PC cliente con IP (Por ejemplo 172.20.16.121) y mascara (255.255.255.0)
 3. Comprobamos que funciona la conexión
-C:\> ping 192.168.66.5 --> Para ver si tenemos conectividad
-C:\> telnet 192.168.66.5 --> Si usamos Telnet comprobamos que funciona
-C:\> ssh -l cisco 192.168.66.5 --> Si usamos SSH comprobamos que funciona
+C:\> ping 172.20.16.205 --> Para ver si tenemos conectividad
+C:\> telnet 172.20.16.205 --> Si usamos Telnet comprobamos que funciona
+C:\> ssh -l cisco 172.20.16.205 --> Si usamos SSH comprobamos que funciona
 
 #### Para la configuración del Port Mirroring ####
 #### Creamos 1 VLAN donde habrá dos PCs, uno sera la victima y el otro el atacante ####
@@ -68,7 +68,7 @@ SW-PortMirror(config)# vlan 71
 SW-PortMirror(config-vlan)# name Clase1
 SW-PortMirror(config-vlan)# exit
 
-###€ Entramos en la interfaz para asignarle una IP ya que como no tenemos un router, estaremos conectados al switch principal del instituto ####
+#### Entramos en la interfaz para asignarle una IP ya que como no tenemos un router, estaremos conectados al switch principal del instituto ####
 SW-PortMirror(config)# interface vlan 71
 SW-PortMirror(config-if)# ip address 172.20.16.235 255.255.255.0
 SW-PortMirror(config-if)# no shutdown
@@ -94,4 +94,4 @@ SW-PortMirror(config-if-range)# exit
 SW-PortMirror(config)# monitor session 1 source interface FastEthernet 0/3 [interface FastEthernet 0/5 --> otro ordenador que sera la victima]
 
 ### Puerto de destino que sera donde estará el IDS ####
-SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/14
+SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/4
