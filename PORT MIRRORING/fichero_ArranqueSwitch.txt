@@ -1,6 +1,4 @@
 #### SCRIPT PARA LA CONFIGURACIÓN MINIMA SWITCH ####
-#### Para las comandas que empiezen por un "#" son opcionales
-
 #### Para entrar dentro ####
 Switch> enable
 
@@ -16,16 +14,16 @@ SW-PortMirror(config)# enable password cisco
 SW-PortMirror(config)# enable secret class
 SW-PortMirror(config)# service password-encryption
 
-#### Configuramos una vlan (nombre, IP y rango de puertos) SOLO para la configuración del mismo ####
+#### Configuramos una vlan (nombre, IP y rango de puertos) SOLO para la configuración de este ####
 SW-PortMirror(config)# vlan 66
 SW-PortMirror(config-vlan)# name Configuration
 SW-PortMirror(config-vlan)# exit
 
 SW-PortMirror(config)# interface vlan 66
-SW-PortMirror(config-if)# ip address 192.168.66.5 255.255.255.0
+SW-PortMirror(config-if)# ip address 172.20.16.205 255.255.255.0
 SW-PortMirror(config-if)# no shutdown
 SW-PortMirror(config-if)# exit
-SW-PortMirror(config)# ip default-gateway 192.168.66.1
+SW-PortMirror(config)# ip default-gateway 172.20.16.1
 
 SW-PortMirror(config)# interface FastEthernet 0/10
 SW-PortMirror(config-if)# switchport mode access
@@ -65,24 +63,35 @@ C:\> telnet 192.168.66.5 --> Si usamos Telnet comprobamos que funciona
 C:\> ssh -l cisco 192.168.66.5 --> Si usamos SSH comprobamos que funciona
 
 #### Para la configuración del Port Mirroring ####
-### Creamos 1 VLAN donde habrá dos PCs, uno sera la victima y el otro el atacante
+#### Creamos 1 VLAN donde habrá dos PCs, uno sera la victima y el otro el atacante ####
 SW-PortMirror(config)# vlan 71
 SW-PortMirror(config-vlan)# name Clase1
 SW-PortMirror(config-vlan)# exit
+
+###€ Entramos en la interfaz para asignarle una IP ya que como no tenemos un router, estaremos conectados al switch principal del instituto ####
+SW-PortMirror(config)# interface vlan 71
+SW-PortMirror(config-if)# ip address 172.20.16.235 255.255.255.0
+SW-PortMirror(config-if)# no shutdown
+SW-PortMirror(config-if)# exit
+SW-PortMirror(config)# ip default-gateway 172.20.16.1
 
 #### Y asignamos puertos a su respectiva VLAN ####
 SW-PortMirror(config)# interface range FastEthernet 0/2 - 9
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
+SW-PortMirror(config-if-range)# no shutdown
+SW-PortMirror(config-if-range)# exit
 
 SW-PortMirror(config)# interface range FastEthernet 0/11 - 23
 SW-PortMirror(config-if-range)# switchport mode access
 SW-PortMirror(config-if-range)# switchport access vlan 71
+SW-PortMirror(config-if-range)# no shutdown
+SW-PortMirror(config-if-range)# exit
 
 # ESTRUCTURA: monitor session [numero-session] [source/destination] [interface/remote] [Ethernet/FastEthernet/GigabitEthernet/Vlan/port-channel] [numero-interfaz/vlan]
 
-# Puerto de origen que sera el PC de la victima
-SW-PortMirror(config)# monitor session 1 source interface FastEthernet 0/3
+#### Puerto de origen que sera el PC de la victima o atacante (probar de las dos maneras) ####
+SW-PortMirror(config)# monitor session 1 source interface FastEthernet 0/3 [interface FastEthernet 0/5 --> otro ordenador que sera la victima]
 
-# Puerto de destino que sera donde estará el IDS
-SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/15
+### Puerto de destino que sera donde estará el IDS ####
+SW-PortMirror(config)# monitor session 1 destination interface FastEthernet 0/14
