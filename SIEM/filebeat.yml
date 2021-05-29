@@ -29,10 +29,10 @@ filebeat.inputs:
     - /var/log/snort/*.txt
     #- c:\programdata\elasticsearch\logs\*
 processors:
-- copy_fields:  #Hara la copia de los datos de un campo para enviarselos a otro
+- copy_fields:
   fields: 
-    - from: message  #Campo de origen
-      to: event.original #Campo de destino
+    - from: message
+      to: event.sms
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
   # matching any regular expression from the list.
