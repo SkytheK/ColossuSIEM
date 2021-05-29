@@ -2,8 +2,8 @@
 ![as-removebg-preview](https://cdn.pcwdld.com/wp-content/uploads/cisco-span-diagram.png)
 
 ## Descripción
-- El PortMirroring es utilizado con un switch de red para enviar copias de los paquetes entrantes o salientes que pasan a través de un puerto espejo y envía los paquetes a un puerto de observación específico para su análisis y monitoreo. Durante el port mirroring, todos los paquetes que pasan a través de este puerto se copian en un puerto de observación.
+- PortMirroring is used with a network switch to send copies of incoming or outgoing packets passing through a mirror port and sends the packets to a specific observation port for analysis and monitoring. During port mirroring, all packets passing through this port are copied to an observation port.
 
-- Utilizaremos PortMirroring para analizar los paquetes que entran y salen de nuestra red para posteriormente analizarlos y detectar si hay algúna intrusión sospechosa, parecido a tener un NIDS pero con el PortMirroring.
+- We will use PortMirroring to analyze the packets entering and leaving our network to later analyze them and detect if there is any suspicious intrusion, similar to having a NIDS but with PortMirroring.
 
-- Usaremos Elasticsearch para filtrar los datos y interpretarlos con Kibana para observarlos de forma gráfica y con TheHive, Cortex y MISP analizarlos y detectar un posible ataque.
+- We will use Elasticsearch to filter the data and interpret them with Kibana to observe them graphically and with TheHive, Cortex and MISP to analyze them and detect a possible attack.
