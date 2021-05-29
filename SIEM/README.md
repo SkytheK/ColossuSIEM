@@ -13,6 +13,7 @@
 ├── cortex
 │   └── application.conf
 ├── docker-compose.yml
+├── filebeat.yml
 ├── README.md
 ├── thehive
 │   └── application.conf
