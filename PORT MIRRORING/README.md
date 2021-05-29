@@ -1,7 +1,7 @@
 # PortMirroring
 ![as-removebg-preview](https://cdn.pcwdld.com/wp-content/uploads/cisco-span-diagram.png)
 
-## Descripción
+## Description
 - PortMirroring is used with a network switch to send copies of incoming or outgoing packets passing through a mirror port and sends the packets to a specific observation port for analysis and monitoring. During port mirroring, all packets passing through this port are copied to an observation port.
 
 - We will use PortMirroring to analyze the packets entering and leaving our network to later analyze them and detect if there is any suspicious intrusion, similar to having a NIDS but with PortMirroring.
