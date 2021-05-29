@@ -7,7 +7,7 @@
 - It will be our IDS (intrusion detection system), which will detect anyone who enters our network by what we have indicated in the rules; with which we will collect the alerts that have tried some of the ways that we have blocked or do not want them to be active; and with which we will respond to these attacks.
 
 ## Installation
-- See the installation script
+- See the installation script --> snort3.sh
 
 ## Rules
 - For the creation of Snort rules in the following image we can see how it is composed:
