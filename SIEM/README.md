@@ -7,7 +7,7 @@
 <img src="https://blogthehiveproject.files.wordpress.com/2018/11/the-hive-logo-schc3a9ma-v1_plan-de-travail-11.png" style="width: 100px;"/>
 
 
-## RUTAS
+## ROUTE
 ```
 .
 ├── cortex
@@ -27,8 +27,8 @@
 
 
 ### ELASTICSEARCH
-- Necesitamos poner estas comandas para poder darles permisos a los contenedores de Elasticsearch y puedan realizar los cambios deseados.
-- Los direcotrios de Elasticsearch son elasticsearch_data/ y elasticsearch_logs/.
+- We need to set these commands in order to give permissions to the Elasticsearch containers so they can make the desired changes.
+- The Elasticsearch directories are elasticsearch_data/ and elasticsearch_logs/.
 ```bash
 chown -R 1000:1000 <path_to_elasticsearch>
 ```
@@ -37,17 +37,8 @@ docker-compose up -d elasticsearch
 ```
 
 ### THEHIVE
-- Para TheHive necesitaremos darle permisos con el usuario a los directorios encontrados en /vol/ una vez se levanten los contenedores.
-- Los directorios de TheHive son, data/ y index/.
-```bash
-chown -R 1000:1000 <path_to_thehive>
-```
-```bash
-docker-compose up -d thehive
-```
-
-### CORTEX
-- Para Cortex necesitaremos crear un usuario nuevo y extraer su API para copiarla y pegarla en la configuración de TheHive
+- For TheHive we will need to give permissions with the user to the directories found in /vol/ once the containers are lifted.
+- TheHive directories are, data/ and index/.
 ```bash
 chown -R 1000:1000 <path_to_thehive>
 ```
